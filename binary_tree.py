@@ -26,7 +26,7 @@ class BinaryTree:
         current_node = self.head
         while current_node:
             if value == current_node.value:
-                return print(current_node)
+                return current_node
             elif value < current_node.value:
                 if current_node.left:
                     current_node = current_node.left
@@ -58,4 +58,64 @@ class BinaryTree:
         self._preorder_recursive(current_node.left)
         self._preorder_recursive(current_node.right)
 
+    def find_parent(self, value: int) -> Node:
+        if self.head and self.head.value == value: #This is because the head doen't have a parent.
+            return self.head   
+        current_node = self.head
+        while current_node:
+            if(current_node.left and current_node.left.value == value) or\
+                (current_node.right and current_node.right.value == value):
+                return current_node
+            elif value > current_node.value:
+                current_node = current_node.right
+            elif value < current_node.value:
+                current_node = current_node.left
+
+    def find_rightmost(self, node: Node) -> Node:
+        current_node = node
+        while current_node.right:
+            current_node = current_node.right
+        return current_node
     
+    def delete(self, value: int):
+        to_delete = self.find(value)
+        parent_of_to_delete = self.find_parent(value)
+
+        if to_delete.left and to_delete.right:
+            #It has 2 children
+            rightmost = self.find_rightmost(to_delete.left)
+            rightmost_parent =self.find_parent(rightmost.value)
+            
+            if rightmost_parent != to_delete:
+                    rightmost_parent.right = rightmost.left
+                    rightmost.left = to_delete.left
+
+            if to_delete == parent_of_to_delete.left:
+                rightmost.right = to_delete.right
+                parent_of_to_delete.left = rightmost
+            
+            elif to_delete == parent_of_to_delete.right:
+                rightmost.right = to_delete.right
+                parent_of_to_delete.right = rightmost
+            
+            else:
+                rightmost.right = to_delete.right
+                self.head = rightmost
+
+        elif to_delete.left or to_delete.right:
+            #It has 1 child.
+            if parent_of_to_delete.left == to_delete:
+                parent_of_to_delete.left = to_delete.right or to_delete.left
+            elif parent_of_to_delete.right == to_delete:
+                parent_of_to_delete.right = to_delete.left or to_delete.right
+            else:
+                self.head = to_delete.right or to_delete.left    
+        else:
+            #No children
+            if parent_of_to_delete.right == to_delete:
+                parent_of_to_delete.right = None
+            elif parent_of_to_delete.left == to_delete:
+                parent_of_to_delete.left = None
+            else:
+                self.head = None
+

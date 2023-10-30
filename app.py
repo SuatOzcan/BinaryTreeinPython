@@ -26,4 +26,7 @@ print(f"Binary tree's right is {binary_tree.head.right}.")
 
 # binary_tree.preorder()
 
-binary_tree.find(12)
+# binary_tree.find(12)
+
+binary_tree.delete(12)
+binary_tree.inorder()
